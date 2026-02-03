@@ -9,7 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar"
 import { toast } from "sonner"
 import api from "@/lib/api"
-import { User, Phone, IdCard, Users, Calendar as CalendarIcon } from "lucide-react"
+import { User, Phone, IdCard, Users, Calendar as CalendarIcon, ArrowLeft } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
 
 export default function SupervisorDetailPage() {
     const params = useParams()
@@ -39,7 +41,7 @@ export default function SupervisorDetailPage() {
         setLoading(true)
         try {
             // Fetch Supervisor Details
-            const supRes = await api.get(`/admin/supervisors/${id}`)
+            const supRes = await api.get(`/ admin / supervisors / ${id} `)
             setSupervisor(supRes.data)
 
             // Fetch Drivers - We get all and filter? Or do we need a specific endpoint?
@@ -66,7 +68,7 @@ export default function SupervisorDetailPage() {
 
     const fetchHistory = async (driverId: string) => {
         try {
-            const res = await api.get(`/admin/attendance-history/${driverId}`)
+            const res = await api.get(`/ admin / attendance - history / ${driverId} `)
             setAttendanceHistory(res.data)
         } catch (err) {
             console.error("Failed to load history")
@@ -87,7 +89,30 @@ export default function SupervisorDetailPage() {
     }
 
 
-    if (loading) return <div>Loading...</div>
+    if (loading) {
+        return (
+            <div className="space-y-6">
+                <Button variant="ghost" disabled>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to Supervisors
+                </Button>
+                <Card>
+                    <CardHeader>
+                        <Skeleton className="h-8 w-[200px] mb-2" />
+                        <Skeleton className="h-4 w-[150px]" />
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <Skeleton className="h-4 w-full max-w-[300px]" />
+                        <Skeleton className="h-4 w-full max-w-[250px]" />
+                    </CardContent>
+                </Card>
+                <div className="space-y-4">
+                    <Skeleton className="h-10 w-[300px]" />
+                    <Skeleton className="h-[200px] w-full" />
+                </div>
+            </div>
+        )
+    }
+
     if (!supervisor) return <div>Supervisor not found</div>
 
     return (

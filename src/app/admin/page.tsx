@@ -1,10 +1,65 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Truck, CheckCircle, AlertCircle } from "lucide-react"
+import { Users, UserCheck, CalendarCheck, Clock, Truck, CheckCircle, AlertCircle } from "lucide-react"
+import { useEffect, useState } from "react"
+import api from "@/lib/api"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function AdminDashboard() {
-    // Ideally fetch stats from API
+    const [stats, setStats] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                // Simulate API call
+                // const response = await api.get('/admin/dashboard-stats');
+                // setStats(response.data);
+                setTimeout(() => {
+                    setStats({
+                        totalSupervisors: 12,
+                        supervisorsChange: "+2 from last month",
+                        totalDrivers: 245,
+                        driversChange: "+18 new registered",
+                        presentToday: 180,
+                        presentRate: "73% Attendance Rate",
+                        absentToday: 65,
+                        absentAttention: "Needs attention",
+                    });
+                    setLoading(false);
+                }, 1500); // Simulate network delay
+            } catch (error) {
+                console.error("Failed to fetch dashboard stats:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
+    if (loading || !stats) {
+        return (
+            <div className="space-y-6">
+                <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    {Array(4).fill(0).map((_, i) => (
+                        <Card key={i}>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <Skeleton className="h-4 w-[100px]" />
+                                <Skeleton className="h-4 w-4" />
+                            </CardHeader>
+                            <CardContent>
+                                <Skeleton className="h-8 w-[60px] mb-1" />
+                                <Skeleton className="h-3 w-[120px]" />
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className="space-y-6">
             <h1 className="text-3xl font-bold tracking-tight">Dashboard Overview</h1>

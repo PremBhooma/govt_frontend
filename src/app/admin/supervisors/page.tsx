@@ -11,12 +11,13 @@ import { toast } from "sonner"
 import api from "@/lib/api"
 import { useRouter } from "next/navigation"
 import { Eye, Edit, Trash2 } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function SupervisorsPage() {
     const router = useRouter()
     const [supervisors, setSupervisors] = useState<any[]>([])
     const [open, setOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [editingId, setEditingId] = useState<string | null>(null)
 
     // Form state
@@ -27,11 +28,14 @@ export default function SupervisorsPage() {
     }, [])
 
     const fetchSupervisors = async () => {
+        setLoading(true)
         try {
             const res = await api.get('/admin/supervisors')
             setSupervisors(res.data)
         } catch (err) {
             toast.error("Failed to load supervisors")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -138,25 +142,36 @@ export default function SupervisorsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {supervisors.map((s) => (
-                                <TableRow key={s._id}>
-                                    <TableCell>{s.name}</TableCell>
-                                    <TableCell>{s.phone}</TableCell>
-                                    <TableCell>{s.govtId}</TableCell>
-                                    <TableCell className="flex gap-2">
-                                        <Button variant="ghost" size="icon" onClick={() => router.push(`/admin/supervisors/${s._id}`)}>
-                                            <Eye className="h-4 w-4 text-green-500" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(s)}>
-                                            <Edit className="h-4 w-4 text-blue-500" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(s._id)}>
-                                            <Trash2 className="h-4 w-4 text-red-500" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                            {supervisors.length === 0 && <TableRow><TableCell colSpan={4} className="text-center">No supervisors found</TableCell></TableRow>}
+                            {loading && supervisors.length === 0 ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[80px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-8 w-[100px]" /></TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                supervisors.map((s) => (
+                                    <TableRow key={s._id}>
+                                        <TableCell>{s.name}</TableCell>
+                                        <TableCell>{s.phone}</TableCell>
+                                        <TableCell>{s.govtId}</TableCell>
+                                        <TableCell className="flex gap-2">
+                                            <Button variant="ghost" size="icon" onClick={() => router.push(`/admin/supervisors/${s._id}`)}>
+                                                <Eye className="h-4 w-4 text-green-500" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(s)}>
+                                                <Edit className="h-4 w-4 text-blue-500" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(s._id)}>
+                                                <Trash2 className="h-4 w-4 text-red-500" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                            {!loading && supervisors.length === 0 && <TableRow><TableCell colSpan={4} className="text-center">No supervisors found</TableCell></TableRow>}
                         </TableBody>
                     </Table>
                 </CardContent>

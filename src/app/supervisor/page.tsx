@@ -11,11 +11,17 @@ import { Search, User, Calendar as CalendarIcon, Check, X } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
+import { Skeleton } from "@/components/ui/skeleton"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function SupervisorDashboard() {
     const [drivers, setDrivers] = useState<any[]>([])
     const [filteredDrivers, setFilteredDrivers] = useState<any[]>([])
     const [search, setSearch] = useState("")
+
+    // Loading States
+    const [loadingDrivers, setLoadingDrivers] = useState(true)
+    const [loadingHistory, setLoadingHistory] = useState(false)
 
     // Selection State
     const [selectedDriver, setSelectedDriver] = useState<any | null>(null)
@@ -49,21 +55,28 @@ export default function SupervisorDashboard() {
     }, [selectedDriver])
 
     const fetchDrivers = async () => {
+        setLoadingDrivers(true)
         try {
             const res = await api.get('/supervisor/drivers')
             setDrivers(res.data)
             setFilteredDrivers(res.data)
         } catch (err) {
             toast.error("Failed to load drivers")
+        } finally {
+            setLoadingDrivers(false)
         }
     }
 
     const fetchHistory = async (driverId: string) => {
+        setLoadingHistory(true)
         try {
             const res = await api.get(`/supervisor/attendance-history/${driverId}`)
             setAttendanceHistory(res.data)
         } catch (err) {
             console.error("Failed to load history")
+            toast.error("Failed to load attendance history")
+        } finally {
+            setLoadingHistory(false)
         }
     }
 
@@ -122,26 +135,40 @@ export default function SupervisorDashboard() {
                         onChange={e => setSearch(e.target.value)}
                     />
                 </div>
-                <div className="flex-1 overflow-y-auto space-y-2 pr-1">
-                    {filteredDrivers.map(d => (
-                        <Card
-                            key={d._id}
-                            className={cn("cursor-pointer transition hover:bg-accent/50", selectedDriver?._id === d._id && "border-primary bg-accent/20")}
-                            onClick={() => setSelectedDriver(d)}
-                        >
-                            <CardContent className="p-3 flex items-center gap-3">
-                                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                    <User className="h-5 w-5 text-primary" />
+                <ScrollArea className="flex-1 pr-1">
+                    <div className="space-y-2">
+                        {loadingDrivers ? (
+                            Array(5).fill(0).map((_, i) => (
+                                <div key={i} className="p-3 rounded-lg border flex items-center gap-3">
+                                    <Skeleton className="h-10 w-10 rounded-full" />
+                                    <div className="space-y-2 flex-1">
+                                        <Skeleton className="h-4 w-[100px]" />
+                                        <Skeleton className="h-3 w-[80px]" />
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="font-semibold">{d.name}</p>
-                                    <p className="text-xs text-muted-foreground">{d.autoNumber}</p>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                    {filteredDrivers.length === 0 && <p className="text-center text-muted-foreground py-8">No drivers found</p>}
-                </div>
+                            ))
+                        ) : (
+                            filteredDrivers.map(d => (
+                                <Card
+                                    key={d._id}
+                                    className={cn("cursor-pointer transition hover:bg-accent/50", selectedDriver?._id === d._id && "border-primary bg-accent/20")}
+                                    onClick={() => setSelectedDriver(d)}
+                                >
+                                    <CardContent className="p-3 flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <User className="h-5 w-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold">{d.name}</p>
+                                            <p className="text-xs text-muted-foreground">{d.autoNumber}</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))
+                        )}
+                        {!loadingDrivers && filteredDrivers.length === 0 && <p className="text-center text-muted-foreground py-8">No drivers found</p>}
+                    </div>
+                </ScrollArea>
             </div>
 
             {/* Main Content / Calendar */}

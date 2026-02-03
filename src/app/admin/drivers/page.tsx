@@ -11,12 +11,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner"
 import api from "@/lib/api"
 import { Edit, Trash2 } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function DriversPage() {
     const [drivers, setDrivers] = useState<any[]>([])
     const [supervisors, setSupervisors] = useState<any[]>([])
     const [open, setOpen] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [editingId, setEditingId] = useState<string | null>(null)
 
     const [formData, setFormData] = useState({ name: "", phone: "", autoNumber: "", assignedSupervisor: "" })
@@ -27,11 +28,14 @@ export default function DriversPage() {
     }, [])
 
     const fetchDrivers = async () => {
+        setLoading(true)
         try {
             const res = await api.get('/admin/drivers')
             setDrivers(res.data)
         } catch (err) {
             toast.error("Failed to load drivers")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -157,23 +161,35 @@ export default function DriversPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {drivers.map((d) => (
-                                <TableRow key={d._id}>
-                                    <TableCell>{d.name}</TableCell>
-                                    <TableCell>{d.phone}</TableCell>
-                                    <TableCell>{d.autoNumber}</TableCell>
-                                    <TableCell>{d.assignedSupervisor?.name || "Unassigned"}</TableCell>
-                                    <TableCell className="flex gap-2">
-                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(d)}>
-                                            <Edit className="h-4 w-4 text-blue-500" />
-                                        </Button>
-                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(d._id)}>
-                                            <Trash2 className="h-4 w-4 text-red-500" />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                            {drivers.length === 0 && <TableRow><TableCell colSpan={5} className="text-center">No drivers found</TableCell></TableRow>}
+                            {loading && drivers.length === 0 ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-4 w-[120px]" /></TableCell>
+                                        <TableCell><Skeleton className="h-8 w-[80px]" /></TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                drivers.map((d) => (
+                                    <TableRow key={d._id}>
+                                        <TableCell>{d.name}</TableCell>
+                                        <TableCell>{d.phone}</TableCell>
+                                        <TableCell>{d.autoNumber}</TableCell>
+                                        <TableCell>{d.assignedSupervisor?.name || "Unassigned"}</TableCell>
+                                        <TableCell className="flex gap-2">
+                                            <Button variant="ghost" size="icon" onClick={() => handleEdit(d)}>
+                                                <Edit className="h-4 w-4 text-blue-500" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon" onClick={() => handleDelete(d._id)}>
+                                                <Trash2 className="h-4 w-4 text-red-500" />
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                            {!loading && drivers.length === 0 && <TableRow><TableCell colSpan={5} className="text-center">No drivers found</TableCell></TableRow>}
                         </TableBody>
                     </Table>
                 </CardContent>
