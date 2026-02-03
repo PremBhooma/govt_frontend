@@ -125,7 +125,7 @@ export default function DriversPage() {
                             <div className="space-y-2">
                                 <Label>Assign Supervisor</Label>
                                 <Select value={formData.assignedSupervisor} onValueChange={(val) => setFormData({ ...formData, assignedSupervisor: val })}>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select Supervisor" />
                                     </SelectTrigger>
                                     <SelectContent>
