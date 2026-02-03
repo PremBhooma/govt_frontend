@@ -90,7 +90,7 @@ export default function SupervisorsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex flex-row justify-between items-center gap-4">
                 <h2 className="text-3xl font-bold tracking-tight">Supervisors</h2>
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
