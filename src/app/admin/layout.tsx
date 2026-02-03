@@ -14,6 +14,7 @@ export default function AdminLayout({
 }) {
     const router = useRouter()
     const [user, setUser] = useState<any>(null)
+    const [mobileOpen, setMobileOpen] = useState(false)
 
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -57,7 +58,7 @@ export default function AdminLayout({
                     <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         Admin Portal
                     </h1>
-                    <Sheet>
+                    <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                         <SheetTrigger asChild>
                             <Button variant="ghost" size="icon">
                                 <Menu size={24} />
@@ -73,7 +74,7 @@ export default function AdminLayout({
                                 </SheetDescription>
                             </div>
                             <nav className="flex-1 p-4 space-y-2 flex flex-col">
-                                <NavLinks handleLogout={handleLogout} />
+                                <NavLinks handleLogout={handleLogout} onLinkClick={() => setMobileOpen(false)} />
                             </nav>
                         </SheetContent>
                     </Sheet>
@@ -88,29 +89,29 @@ export default function AdminLayout({
     )
 }
 
-function NavLinks({ handleLogout }: { handleLogout: () => void }) {
+function NavLinks({ handleLogout, onLinkClick }: { handleLogout: () => void, onLinkClick?: () => void }) {
     return (
         <>
             <div className="flex flex-col gap-2">
-                <Link href="/admin">
+                <Link href="/admin" onClick={onLinkClick}>
                     <Button variant="ghost" className="w-full justify-start gap-2">
                         <LayoutDashboard size={20} />
                         Dashboard
                     </Button>
                 </Link>
-                <Link href="/admin/supervisors">
+                <Link href="/admin/supervisors" onClick={onLinkClick}>
                     <Button variant="ghost" className="w-full justify-start gap-2">
                         <Users size={20} />
                         Supervisors
                     </Button>
                 </Link>
-                <Link href="/admin/drivers">
+                <Link href="/admin/drivers" onClick={onLinkClick}>
                     <Button variant="ghost" className="w-full justify-start gap-2">
                         <UserPlus size={20} />
                         Drivers
                     </Button>
                 </Link>
-                <Link href="/admin/attendance">
+                <Link href="/admin/attendance" onClick={onLinkClick}>
                     <Button variant="ghost" className="w-full justify-start gap-2">
                         <BarChart3 size={20} />
                         Attendance
