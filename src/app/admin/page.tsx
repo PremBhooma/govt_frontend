@@ -6,8 +6,19 @@ import { useEffect, useState } from "react"
 import api from "@/lib/api"
 import { Skeleton } from "@/components/ui/skeleton"
 
+interface DashboardStats {
+    totalSupervisors: number;
+    supervisorsChange: string;
+    totalDrivers: number;
+    driversChange: string;
+    presentToday: number;
+    presentRate: string;
+    absentToday: number;
+    absentAttention: string;
+}
+
 export default function AdminDashboard() {
-    const [stats, setStats] = useState(null);
+    const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
