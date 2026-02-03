@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import api from "@/lib/api"
 import { useRouter } from "next/navigation"
+import { Eye, Edit, Trash2 } from "lucide-react"
 
 export default function SupervisorsPage() {
     const router = useRouter()
@@ -51,6 +52,20 @@ export default function SupervisorsPage() {
         setOpen(true)
     }
 
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure? This will also delete ALL assigned drivers.")) return
+        setLoading(true)
+        try {
+            await api.delete(`/admin/supervisors/${id}`)
+            toast.success("Supervisor and assigned drivers deleted")
+            fetchSupervisors()
+        } catch (err: any) {
+            toast.error(err.response?.data?.error || "Delete failed")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
@@ -75,7 +90,7 @@ export default function SupervisorsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <h2 className="text-3xl font-bold tracking-tight">Supervisors</h2>
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
@@ -112,7 +127,7 @@ export default function SupervisorsPage() {
                 <CardHeader>
                     <CardTitle>All Supervisors</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -128,9 +143,16 @@ export default function SupervisorsPage() {
                                     <TableCell>{s.name}</TableCell>
                                     <TableCell>{s.phone}</TableCell>
                                     <TableCell>{s.govtId}</TableCell>
-                                    <TableCell className="space-x-2">
-                                        <Button variant="outline" size="sm" onClick={() => router.push(`/admin/supervisors/${s._id}`)}>View</Button>
-                                        <Button variant="ghost" size="sm" onClick={() => handleEdit(s)}>Edit</Button>
+                                    <TableCell className="flex gap-2">
+                                        <Button variant="ghost" size="icon" onClick={() => router.push(`/admin/supervisors/${s._id}`)}>
+                                            <Eye className="h-4 w-4 text-green-500" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(s)}>
+                                            <Edit className="h-4 w-4 text-blue-500" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(s._id)}>
+                                            <Trash2 className="h-4 w-4 text-red-500" />
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}

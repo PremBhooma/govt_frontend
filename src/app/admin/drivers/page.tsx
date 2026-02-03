@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import api from "@/lib/api"
+import { Edit, Trash2 } from "lucide-react"
 
 export default function DriversPage() {
     const [drivers, setDrivers] = useState<any[]>([])
@@ -60,6 +61,20 @@ export default function DriversPage() {
         setOpen(true)
     }
 
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this driver?")) return
+        setLoading(true)
+        try {
+            await api.delete(`/admin/drivers/${id}`)
+            toast.success("Driver deleted successfully")
+            fetchDrivers()
+        } catch (err: any) {
+            toast.error(err.response?.data?.error || "Delete failed")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
@@ -84,7 +99,7 @@ export default function DriversPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <h2 className="text-3xl font-bold tracking-tight">Auto Drivers</h2>
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
@@ -130,7 +145,7 @@ export default function DriversPage() {
                 <CardHeader>
                     <CardTitle>All Drivers</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -148,8 +163,13 @@ export default function DriversPage() {
                                     <TableCell>{d.phone}</TableCell>
                                     <TableCell>{d.autoNumber}</TableCell>
                                     <TableCell>{d.assignedSupervisor?.name || "Unassigned"}</TableCell>
-                                    <TableCell>
-                                        <Button variant="ghost" size="sm" onClick={() => handleEdit(d)}>Edit</Button>
+                                    <TableCell className="flex gap-2">
+                                        <Button variant="ghost" size="icon" onClick={() => handleEdit(d)}>
+                                            <Edit className="h-4 w-4 text-blue-500" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(d._id)}>
+                                            <Trash2 className="h-4 w-4 text-red-500" />
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}

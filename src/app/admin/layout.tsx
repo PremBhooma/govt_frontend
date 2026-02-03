@@ -38,7 +38,7 @@ export default function AdminLayout({
     if (!user) return null // or loading spinner
 
     return (
-        <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900 w-full overflow-x-hidden">
             {/* Desktop Sidebar */}
             <aside className="w-64 bg-white dark:bg-gray-800 border-r hidden md:flex flex-col fixed h-full z-20">
                 <div className="p-6 border-b h-16 flex items-center">
@@ -46,14 +46,14 @@ export default function AdminLayout({
                         Admin Portal
                     </h1>
                 </div>
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                <nav className="flex-1 p-4 space-y-2 overflow-y-auto flex flex-col">
                     <NavLinks handleLogout={handleLogout} />
                 </nav>
             </aside>
 
             {/* Mobile Header & Content Wrapper */}
-            <div className="flex-1 flex flex-col md:pl-64 transition-all duration-300">
-                <header className="md:hidden h-16 bg-white dark:bg-gray-800 border-b flex items-center px-4 justify-between sticky top-0 z-30">
+            <div className="flex-1 flex flex-col md:pl-64 transition-all duration-300 min-w-0">
+                <header className="md:hidden h-16 bg-white dark:bg-gray-800 border-b flex items-center px-4 justify-between sticky top-0 z-30 flex-shrink-0">
                     <h1 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         Admin Portal
                     </h1>
@@ -72,7 +72,7 @@ export default function AdminLayout({
                                     Navigation menu for the Admin Portal
                                 </SheetDescription>
                             </div>
-                            <nav className="flex-1 p-4 space-y-2">
+                            <nav className="flex-1 p-4 space-y-2 flex flex-col">
                                 <NavLinks handleLogout={handleLogout} />
                             </nav>
                         </SheetContent>
@@ -80,7 +80,7 @@ export default function AdminLayout({
                 </header>
 
                 {/* Main Content */}
-                <main className="flex-1 p-4 md:p-8 overflow-auto">
+                <main className="flex-1 p-4 md:p-8 overflow-y-auto overflow-x-hidden">
                     {children}
                 </main>
             </div>

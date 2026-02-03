@@ -98,7 +98,7 @@ export default function SupervisorDetailPage() {
             </div>
 
             <Tabs defaultValue="overview" className="space-y-4">
-                <TabsList>
+                <TabsList className="w-full justify-start overflow-x-auto flex-nowrap md:w-auto">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="drivers">Allocated Drivers</TabsTrigger>
                     <TabsTrigger value="attendance">Attendance View</TabsTrigger>
@@ -148,7 +148,7 @@ export default function SupervisorDetailPage() {
                             <CardTitle>Allocated Drivers</CardTitle>
                             <CardDescription>Drivers assigned to this supervisor.</CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow>

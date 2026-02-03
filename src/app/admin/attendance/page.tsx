@@ -35,15 +35,15 @@ export default function AttendancePage() {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
                 <h2 className="text-3xl font-bold tracking-tight">Attendance Records</h2>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                     <Input
                         type="date"
                         value={filterDate}
                         onChange={(e) => setFilterDate(e.target.value)}
-                        className="w-auto"
+                        className="w-full sm:w-auto"
                     />
                     <Select value={filterStatus} onValueChange={setFilterStatus}>
-                        <SelectTrigger className="w-[150px]">
+                        <SelectTrigger className="w-full sm:w-[150px]">
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -56,7 +56,7 @@ export default function AttendancePage() {
             </div>
 
             <Card>
-                <CardContent className="pt-6">
+                <CardContent className="pt-6 overflow-x-auto">
                     <Table>
                         <TableHeader>
                             <TableRow>

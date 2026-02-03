@@ -67,7 +67,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex h-screen w-full items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+        <div className="flex min-h-screen w-full items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-8">
             <Card className="w-full max-w-md shadow-lg">
                 <CardHeader className="text-center">
                     <CardTitle className="text-2xl font-bold">Attendance Portal</CardTitle>
