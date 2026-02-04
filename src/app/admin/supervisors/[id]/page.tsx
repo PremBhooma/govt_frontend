@@ -41,7 +41,7 @@ export default function SupervisorDetailPage() {
         setLoading(true)
         try {
             // Fetch Supervisor Details
-            const supRes = await api.get(`/ admin / supervisors / ${id} `)
+            const supRes = await api.get(`/admin/supervisors/${id}`)
             setSupervisor(supRes.data)
 
             // Fetch Drivers - We get all and filter? Or do we need a specific endpoint?
@@ -68,7 +68,7 @@ export default function SupervisorDetailPage() {
 
     const fetchHistory = async (driverId: string) => {
         try {
-            const res = await api.get(`/ admin / attendance - history / ${driverId} `)
+            const res = await api.get(`/admin/attendance-history/${driverId}`)
             setAttendanceHistory(res.data)
         } catch (err) {
             console.error("Failed to load history")
@@ -123,10 +123,25 @@ export default function SupervisorDetailPage() {
             </div>
 
             <Tabs defaultValue="overview" className="space-y-4">
-                <TabsList className="w-full justify-start overflow-x-auto flex-nowrap md:w-auto">
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="drivers">Allocated Drivers</TabsTrigger>
-                    <TabsTrigger value="attendance">Attendance View</TabsTrigger>
+                <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent">
+                    <TabsTrigger
+                        value="overview"
+                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 font-medium text-muted-foreground transition-all hover:text-foreground data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    >
+                        Overview
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="drivers"
+                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 font-medium text-muted-foreground transition-all hover:text-foreground data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    >
+                        Allocated Drivers
+                    </TabsTrigger>
+                    <TabsTrigger
+                        value="attendance"
+                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3 font-medium text-muted-foreground transition-all hover:text-foreground data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    >
+                        Attendance View
+                    </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="overview">
